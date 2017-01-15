@@ -68,7 +68,6 @@ public class LoggerManager {
 
     /**
      * 打印警告日志
-     *
      * @param message
      */
     public void warn(String message) {
@@ -130,6 +129,7 @@ public class LoggerManager {
      * 打印调试日志
      *
      * @param message
+     *
      */
     public void debug(String message, Throwable exception) {
         log.debug(message, exception);

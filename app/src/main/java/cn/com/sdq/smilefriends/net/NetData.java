@@ -1,7 +1,5 @@
 package cn.com.sdq.smilefriends.net;
 
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -15,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Administrator on 2016/10/30.
+ * Created by sdq on 2016/10/30.
  */
 
 public class NetData {
@@ -28,98 +26,54 @@ public class NetData {
     public static final String APPKEY ="4038445a90fbbf1fd6e286307751d0b0";
 
     public static void main(String[] args) {
-            getRequest1();
+
     }
     //1.按更新时间查询笑话
-    public static void getRequest1(){
+    public static String getRequestUpdateTime(String page) throws Exception {
         String result =null;
-        String url ="http://japi.juhe.cn/joke/content/list.from";//请求接口地址
         Map params = new HashMap();//请求参数
-        params.put("sort","");//类型，desc:指定时间之前发布的，asc:指定时间之后发布的
-        params.put("page","1");//当前页数,默认1
-        params.put("pagesize","10");//每次返回条数,默认1,最大20
-        params.put("time",System.currentTimeMillis());//时间戳（10位），如：1418816972
+        params.put("sort",NetApi.UPDATE_INDEX_KEY);//类型，desc:指定时间之前发布的，asc:指定时间之后发布的
+        params.put("page",page);//当前页数,默认1
+        params.put("pagesize",NetApi.REQUEST_NUMBER);//每次返回条数,默认1,最大20
+        params.put("time",System.currentTimeMillis()/1000);//时间戳（10位），如：1418816972
         params.put("key",APPKEY);//您申请的key
-
-        try {
-            result =net(url, params, "GET");
-            JSONObject object = new JSONObject(result);
-            if(object.getInt("error_code")==0){
-                System.out.println(object.get("result"));
-            }else{
-                System.out.println(object.get("error_code")+":"+object.get("reason"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        result =net(NetApi.API_NET_URI, params, "GET");
+        return result;
     }
 
     //2.最新笑话
-    public static void getRequest2(){
+    public static String getRequestNewJake(String page) throws Exception {
         String result =null;
-        String url ="http://japi.juhe.cn/joke/content/text.from";//请求接口地址
         Map params = new HashMap();//请求参数
-        params.put("page","1");//当前页数,默认1
-        params.put("pagesize","10");//每次返回条数,默认1,最大20
+        params.put("page",page);//当前页数,默认1
+        params.put("pagesize",NetApi.REQUEST_NUMBER);//每次返回条数,默认1,最大20
         params.put("key",APPKEY);//您申请的key
-
-        try {
-            result =net(url, params, "GET");
-            JSONObject object = new JSONObject(result);
-            if(object.getInt("error_code")==0){
-                System.out.println(object.get("result"));
-            }else{
-                System.out.println(object.get("error_code")+":"+object.get("reason"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        result =net(NetApi.API_NET_NEW_URI, params, "GET");
+        return result;
     }
 
     //3.按更新时间查询趣图
-    public static void getRequest3(){
+    public static String getRequestPhoto(String page) throws Exception {
         String result =null;
-        String url ="http://japi.juhe.cn/joke/img/list.from";//请求接口地址
         Map params = new HashMap();//请求参数
-        params.put("sort","");//类型，desc:指定时间之前发布的，asc:指定时间之后发布的
-        params.put("page","");//当前页数,默认1
-        params.put("pagesize","");//每次返回条数,默认1,最大20
-        params.put("time","");//时间戳（10位），如：1418816972
+        params.put("sort",NetApi.UPDATE_INDEX_KEY);//类型，desc:指定时间之前发布的，asc:指定时间之后发布的
+        params.put("page",page);//当前页数,默认1
+        params.put("pagesize",NetApi.REQUEST_NUMBER);//每次返回条数,默认1,最大20
+        params.put("time",System.currentTimeMillis()/1000);//时间戳（10位），如：1418816972
         params.put("key",APPKEY);//您申请的key
-
-        try {
-            result =net(url, params, "GET");
-            JSONObject object = new JSONObject(result);
-            if(object.getInt("error_code")==0){
-                System.out.println(object.get("result"));
-            }else{
-                System.out.println(object.get("error_code")+":"+object.get("reason"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        result =net(NetApi.API_NET_PHOTO_URI, params, "GET");
+        return result;
     }
 
     //4.最新趣图
-    public static void getRequest4(){
+    public static String getRequestNewPhoto(String page) throws Exception {
         String result =null;
-        String url ="http://japi.juhe.cn/joke/img/text.from";//请求接口地址
         Map params = new HashMap();//请求参数
-        params.put("page","");//当前页数,默认1
-        params.put("pagesize","");//每次返回条数,默认1,最大20
+        params.put("page",page);//当前页数,默认1
+        params.put("pagesize",NetApi.REQUEST_NUMBER);//每次返回条数,默认1,最大20
         params.put("key",APPKEY);//您申请的key
-
-        try {
-            result =net(url, params, "GET");
-            JSONObject object = new JSONObject(result);
-            if(object.getInt("error_code")==0){
-                System.out.println(object.get("result"));
-            }else{
-                System.out.println(object.get("error_code")+":"+object.get("reason"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        result =net(NetApi.API_NET_NEWPHOTO_URI, params, "GET");
+        return result;
     }
 
 
