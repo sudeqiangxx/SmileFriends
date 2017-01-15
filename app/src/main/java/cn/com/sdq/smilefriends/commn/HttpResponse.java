@@ -15,6 +15,8 @@ public class HttpResponse<T> {
         return reason;
     }
 
+
+
     public void setReason(String reason) {
         this.reason = reason;
     }
