@@ -60,4 +60,15 @@ public class JakeBean {
     public void setHashId(String hashId) {
         this.hashId = hashId;
     }
+
+    @Override
+    public String toString() {
+        return "JakeBean{" +
+                "content='" + content + '\'' +
+                ", unixtime=" + unixtime +
+                ", updatetime='" + updatetime + '\'' +
+                ", hashId='" + hashId + '\'' +
+                ", url='" + url + '\'' +
+                '}';
+    }
 }

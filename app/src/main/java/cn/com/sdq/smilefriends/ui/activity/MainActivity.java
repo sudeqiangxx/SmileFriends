@@ -2,33 +2,37 @@ package cn.com.sdq.smilefriends.ui.activity;
 
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTabHost;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TabHost;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
 import cn.com.sdq.smilefriends.R;
+import cn.com.sdq.smilefriends.ui.fragment.ConsultFragment;
 import cn.com.sdq.smilefriends.ui.fragment.ContentFragment;
-import cn.com.sdq.smilefriends.util.okhttp;
-import io.codetail.animation.SupportAnimator;
-import io.codetail.animation.ViewAnimationUtils;
-import okhttp3.OkHttpClient;
+import cn.com.sdq.smilefriends.ui.fragment.HomeFragment;
+import cn.com.sdq.smilefriends.ui.fragment.MineFragment;
 import yalantis.com.sidemenu.interfaces.Resourceble;
 import yalantis.com.sidemenu.interfaces.ScreenShotable;
 import yalantis.com.sidemenu.model.SlideMenuItem;
 import yalantis.com.sidemenu.util.ViewAnimator;
 
-public class MainActivity extends ActionBarActivity implements ViewAnimator.ViewAnimatorListener{
+public class MainActivity extends ActionBarActivity implements ViewAnimator.ViewAnimatorListener {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private List<SlideMenuItem> list = new ArrayList<>();
@@ -36,21 +40,15 @@ public class MainActivity extends ActionBarActivity implements ViewAnimator.View
     private ViewAnimator viewAnimator;
     private int res = R.drawable.content_music;
     private LinearLayout linearLayout;
+    private List<TabItem> mTableItemList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-          }
-        }).start();
-             OkHttpClient httpclent=okhttp.getmOkHttpClientInstance();
-        contentFragment = ContentFragment.newInstance(R.drawable.content_music);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_frame, contentFragment)
-                .commit();
+        ButterKnife.bind(this);
+        initTabData();
+        initTabHost();
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.setScrimColor(Color.TRANSPARENT);
         linearLayout = (LinearLayout) findViewById(R.id.left_drawer);
@@ -61,14 +59,13 @@ public class MainActivity extends ActionBarActivity implements ViewAnimator.View
             }
         });
 
-
         setActionBar();
         createMenuList();
-        viewAnimator = new ViewAnimator<>(this, list, contentFragment, drawerLayout, this);
-
+//        viewAnimator = new ViewAnimator<>(this, list,null , drawerLayout, this);
 
 
     }
+
     private void createMenuList() {
         SlideMenuItem menuItem0 = new SlideMenuItem(ContentFragment.CLOSE, R.drawable.icn_close);
         list.add(menuItem0);
@@ -112,8 +109,8 @@ public class MainActivity extends ActionBarActivity implements ViewAnimator.View
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-                if (slideOffset > 0.6 && linearLayout.getChildCount() == 0)
-                    viewAnimator.showMenuContent();
+                if (slideOffset > 0.6 && linearLayout.getChildCount() == 0);
+//                    viewAnimator.showMenuContent();
             }
 
             /** Called when a drawer has settled in a completely open state. */
@@ -123,6 +120,7 @@ public class MainActivity extends ActionBarActivity implements ViewAnimator.View
         };
         drawerLayout.setDrawerListener(drawerToggle);
     }
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -155,20 +153,6 @@ public class MainActivity extends ActionBarActivity implements ViewAnimator.View
         }
     }
 
-    private ScreenShotable replaceFragment(ScreenShotable screenShotable, int topPosition) {
-        this.res = this.res == R.drawable.content_music ? R.drawable.content_films : R.drawable.content_music;
-        View view = findViewById(R.id.content_frame);
-        int finalRadius = Math.max(view.getWidth(), view.getHeight());
-        SupportAnimator animator = ViewAnimationUtils.createCircularReveal(view, 0, topPosition, 0, finalRadius);
-        animator.setInterpolator(new AccelerateInterpolator());
-        animator.setDuration(ViewAnimator.CIRCULAR_REVEAL_ANIMATION_DURATION);
-
-        findViewById(R.id.content_overlay).setBackgroundDrawable(new BitmapDrawable(getResources(), screenShotable.getBitmap()));
-        animator.start();
-        ContentFragment contentFragment = ContentFragment.newInstance(this.res);
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, contentFragment).commit();
-        return contentFragment;
-    }
 
     @Override
     public ScreenShotable onSwitch(Resourceble slideMenuItem, ScreenShotable screenShotable, int position) {
@@ -176,7 +160,7 @@ public class MainActivity extends ActionBarActivity implements ViewAnimator.View
             case ContentFragment.CLOSE:
                 return screenShotable;
             default:
-                return replaceFragment(screenShotable, position);
+                return screenShotable;
         }
     }
 
@@ -194,5 +178,140 @@ public class MainActivity extends ActionBarActivity implements ViewAnimator.View
     @Override
     public void addViewToContainer(View view) {
         linearLayout.addView(view);
+    }
+
+    class TabItem {
+        //正常情况下显示的图片
+        private int imageNormal;
+        //选中情况下显示的图片
+        private int imagePress;
+        //tab的名字
+        private int title;
+        private String titleString;
+
+        //tab对应的fragment
+        public Class<? extends Fragment> fragmentClass;
+
+        public View view;
+        public ImageView imageView;
+        public TextView textView;
+
+        public TabItem(int imageNormal, int imagePress, int title, Class<? extends Fragment> fragmentClass) {
+            this.imageNormal = imageNormal;
+            this.imagePress = imagePress;
+            this.title = title;
+            this.fragmentClass = fragmentClass;
+        }
+
+        public Class<? extends Fragment> getFragmentClass() {
+            return fragmentClass;
+        }
+
+        public int getImageNormal() {
+            return imageNormal;
+        }
+
+        public int getImagePress() {
+            return imagePress;
+        }
+
+        public int getTitle() {
+            return title;
+        }
+
+        public String getTitleString() {
+            if (title == 0) {
+                return "";
+            }
+            if (TextUtils.isEmpty(titleString)) {
+                titleString = getString(title);
+            }
+            return titleString;
+        }
+
+        public View getView() {
+            if (this.view == null) {
+                this.view = getLayoutInflater().inflate(R.layout.view_tab_indicator, null);
+                this.imageView = (ImageView) this.view.findViewById(R.id.tab_iv_image);
+                this.textView = (TextView) this.view.findViewById(R.id.tab_tv_text);
+                if (this.title == 0) {
+                    this.textView.setVisibility(View.GONE);
+                } else {
+                    this.textView.setVisibility(View.VISIBLE);
+                    this.textView.setText(getTitleString());
+                }
+                this.imageView.setImageResource(imageNormal);
+            }
+            return this.view;
+        }
+
+        //切换tab的方法
+        public void setChecked(boolean isChecked) {
+            if (imageView != null) {
+                if (isChecked) {
+                    imageView.setImageResource(imagePress);
+                } else {
+                    imageView.setImageResource(imageNormal);
+                }
+            }
+            if (textView != null && title != 0) {
+                if (isChecked) {
+                    textView.setTextColor(getResources().getColor(R.color.main_botton_text_select));
+                } else {
+                    textView.setTextColor(getResources().getColor(R.color.main_bottom_text_normal));
+                }
+            }
+        }
+    }
+
+
+    //初始化Tab数据
+    private void initTabData() {
+        mTableItemList = new ArrayList<>();
+        //添加tab
+        mTableItemList.add(new TabItem(R.drawable.main_bottom_home_normal, R.drawable.main_bottom_home_press, R.string.main_home_text, HomeFragment.class));
+        mTableItemList.add(new TabItem(R.drawable.main_bottom_consult_normal, R.drawable.main_bottom_consult_press, R.string.main_consult_text, ConsultFragment.class));
+        mTableItemList.add(new TabItem(R.drawable.main_bottom_mine_normal, R.drawable.main_bottom_mine_press, R.string.main_mine_text, MineFragment.class));
+
+    }
+
+    //初始化主页选项卡视图
+    private void initTabHost() {
+        //实例化FragmentTabHost对象
+        FragmentTabHost fragmentTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
+        fragmentTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
+
+        //去掉分割线
+        fragmentTabHost.getTabWidget().setDividerDrawable(null);
+
+        for (int i = 0; i < mTableItemList.size(); i++) {
+            TabItem tabItem = mTableItemList.get(i);
+            //实例化一个TabSpec,设置tab的名称和视图
+            TabHost.TabSpec tabSpec = fragmentTabHost.newTabSpec(tabItem.getTitleString()).setIndicator(tabItem.getView());
+            fragmentTabHost.addTab(tabSpec, tabItem.getFragmentClass(), null);
+
+            //给Tab按钮设置背景
+            fragmentTabHost.getTabWidget().getChildAt(i).setBackgroundColor(getResources().getColor(R.color.main_bottom_bg));
+
+            //默认选中第一个tab
+            if (i == 0) {
+                tabItem.setChecked(true);
+            }
+        }
+
+        fragmentTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+                //重置Tab样式
+                for (int i = 0; i < mTableItemList.size(); i++) {
+                    TabItem tabitem = mTableItemList.get(i);
+                    if (tabId.equals(tabitem.getTitleString())) {
+                        tabitem.setChecked(true);
+                    } else {
+                        tabitem.setChecked(false);
+                    }
+                }
+            }
+        });
     }
 }
