@@ -33,7 +33,6 @@ public class FragmentOne extends BaseFragment implements Jake.View{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("FragmentOne", "onCreate");
     }
 
     private View view;
@@ -57,7 +56,6 @@ public class FragmentOne extends BaseFragment implements Jake.View{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d("FragmentOne", "onCeView");
         view = inflater.inflate(R.layout.fragment_one, container, false);
         initData();
         initView();

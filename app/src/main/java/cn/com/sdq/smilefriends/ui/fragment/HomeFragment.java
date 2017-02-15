@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -21,6 +20,7 @@ import cn.com.sdq.smilefriends.R;
 import cn.com.sdq.smilefriends.base.BaseFragment;
 import cn.com.sdq.smilefriends.bean.JakeBean;
 import cn.com.sdq.smilefriends.contact.Jake;
+import cn.com.sdq.smilefriends.presenter.JakeGifPresenter;
 import cn.com.sdq.smilefriends.presenter.JakePresenter;
 import cn.com.sdq.smilefriends.ui.adapter.MyFragmentPagerAdapter;
 import cn.com.sdq.smilefriends.util.utils.L;
@@ -56,7 +56,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     private List<JakeBean> mData;
     //view和数据交互工具
     private JakePresenter mJakePresenter;
-
+    private Jake.Prestener mJakeGifPresenter;
     private Handler mHandler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -66,9 +66,11 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                     hideWaitDialog();
                     refreshTabOneData(mData);
                     swipeRefreshLayout.setRefreshing(false);
-
                     break;
                 case TAB_TWO_REFRESH:
+                    hideWaitDialog();
+                    refreshTabTwoData(mData);
+                    swipeRefreshLayout.setRefreshing(false);
                     break;
                 case TAB_THREE_REFRESH:
                     break;
@@ -98,6 +100,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         super.initData();
         mJakePresenter=new JakePresenter(this);
         setPresenter(mJakePresenter);
+        mJakeGifPresenter=new JakeGifPresenter(this);
+        setPresenter(mJakeGifPresenter);
     }
 
     @Override
@@ -134,13 +138,11 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         tabOne = tabLayout.getTabAt(TAB_ONE_REFRESH);
         tabTwo = tabLayout.getTabAt(TAB_TWO_REFRESH);
         tabThree = tabLayout.getTabAt(TAB_THREE_REFRESH);
-
         initListener();
     }
 
     private void initListener() {
         swipeRefreshLayout.setOnRefreshListener(this);
-
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -162,7 +164,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                mJakePresenter.getJakeList();
                 break;
             case TAB_TWO_REFRESH:
-               mJakePresenter.getJakeList();
+               mJakeGifPresenter.getJakeList();
                 break;
             case TAB_THREE_REFRESH:
                mJakePresenter.getJakeList();
@@ -175,18 +177,10 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     }
 
     private void refreshTabTwoData(List<JakeBean> jakeBeanList) {
-        List<String> datas = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            datas.add("我是第二页刷新出来的" + (i + 1));
-        }
         ((FragmentTwo) myFragmentPagerAdapter.getItem(TAB_TWO_REFRESH)).setDatas(jakeBeanList);
     }
 
     private void refreshTabThreeData(List<JakeBean> jakeBeanList) {
-        List<String> datas = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            datas.add("我是第三页刷新出来的" + (i + 1));
-        }
         ((FragmentThree) myFragmentPagerAdapter.getItem(TAB_THREE_REFRESH)).setDatas(jakeBeanList);
     }
 
@@ -198,28 +192,21 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 for (JakeBean j:data
                         ) {
                     L.i(TAG,"反馈数据成功刷新数据"+j.toString());
-
                 }
                 mData=data;
                 mHandler.sendEmptyMessage(TAB_ONE_REFRESH);
                 break;
             case TAB_TWO_REFRESH:
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        refreshTabTwoData(data);
-//                        swipeRefreshLayout.setRefreshing(false);
-//                    }
-//                }, 1500);
+//                L.i(TAG,"反馈数据成功刷新数据");
+                for (JakeBean j:data
+                        ) {
+                    L.i(TAG,"反馈数据成功刷新数据"+j.toString());
+                }
+                mData=data;
+                mHandler.sendEmptyMessage(TAB_TWO_REFRESH);
                 break;
             case TAB_THREE_REFRESH:
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        refreshTabThreeData(data);
-//                        swipeRefreshLayout.setRefreshing(false);
-//                    }
-//                }, 1500);
+
                 break;
         }
     }
