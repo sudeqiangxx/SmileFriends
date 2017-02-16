@@ -107,7 +107,6 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     @Override
     public void initView(View view) {
         super.initView(view);
-        initView();
 
     }
 
@@ -130,8 +129,8 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 , android.R.color.holo_green_light);
         myFragmentPagerAdapter = new MyFragmentPagerAdapter(getActivity().getSupportFragmentManager());
         noScrollViewPager.setAdapter(myFragmentPagerAdapter);
-        noScrollViewPager.setNoScroll(true);    //控制ViewPager是否可以左右滑动(true表示不可以)
-
+        noScrollViewPager.setNoScroll(true);//控制ViewPager是否可以左右滑动(true表示不可以)
+        noScrollViewPager.setOffscreenPageLimit(6);
         //将TabLayout和ViewPager绑定在一起，使双方各自的改变都能直接影响另一方，解放了开发人员对双方变动事件的监听
         tabLayout.setupWithViewPager(noScrollViewPager);
         //指定Tab的位置

@@ -89,7 +89,7 @@ public class JakePresenter implements Jake.Prestener {
 
                         if (jakeBeanList.size()>0) {
                             //
-                            mView.showContent(jakeBeanList);
+                            mView.showMorejake(jakeBeanList);
                         }else {
                             mView.showFail("暂无数据");
                         }

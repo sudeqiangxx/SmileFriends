@@ -72,7 +72,7 @@ public class FragmentOne extends BaseFragment implements Jake.View{
         super.initData();
         mJakePresenter=new JakePresenter(this);
         setPresenter(mJakePresenter);
-//        mJakePresenter.getJakeList();
+        mJakePresenter.getJakeList();
     }
 
     public void setDatas(List<JakeBean> datas) {
@@ -127,12 +127,20 @@ public class FragmentOne extends BaseFragment implements Jake.View{
     @Override
     public void showContent(List<JakeBean> data) {
         Log.i(TAG,"显示数据");
-        mDatas.addAll(data);
+        if (mDatas!=null&&mDatas.size()>0){
+            mDatas.clear();
+            mDatas.addAll(data);
+        }else {
+            mDatas.addAll(data);
+        }
+
        mHandler.sendEmptyMessage(ADD_DATA);
     }
 
     @Override
     public void showMorejake(List<JakeBean> data) {
+        mDatas.addAll(data);
+        mHandler.sendEmptyMessage(ADD_DATA);
 
     }
 

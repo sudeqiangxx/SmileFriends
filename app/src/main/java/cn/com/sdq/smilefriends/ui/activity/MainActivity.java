@@ -1,10 +1,14 @@
 package cn.com.sdq.smilefriends.ui.activity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,6 +31,7 @@ import cn.com.sdq.smilefriends.ui.fragment.ConsultFragment;
 import cn.com.sdq.smilefriends.ui.fragment.ContentFragment;
 import cn.com.sdq.smilefriends.ui.fragment.HomeFragment;
 import cn.com.sdq.smilefriends.ui.fragment.MineFragment;
+import cn.com.sdq.smilefriends.util.utils.L;
 import yalantis.com.sidemenu.interfaces.Resourceble;
 import yalantis.com.sidemenu.interfaces.ScreenShotable;
 import yalantis.com.sidemenu.model.SlideMenuItem;
@@ -41,6 +46,7 @@ public class MainActivity extends ActionBarActivity implements ViewAnimator.View
     private int res = R.drawable.content_music;
     private LinearLayout linearLayout;
     private List<TabItem> mTableItemList;
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +68,37 @@ public class MainActivity extends ActionBarActivity implements ViewAnimator.View
         setActionBar();
         createMenuList();
 //        viewAnimator = new ViewAnimator<>(this, list,null , drawerLayout, this);
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
 
+        }else{
+            //
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+        }
 
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //做事情
+                    L.i("可以做事情了");
+
+                } else {
+
+                    //不能做事情
+                    L.i("不可做事");
+                }
+                return;
+            }
+        }
     }
 
     private void createMenuList() {

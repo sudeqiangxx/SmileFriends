@@ -42,7 +42,7 @@ public class JakeGifPresenter implements Jake.Prestener{
                                     ) {
                                 L.i(TAG,"获取数据成功"+ j.toString());
                             }
-                            mView.showMorejake(jakeBeanList);
+                            mView.showContent(jakeBeanList);
 
 
 
@@ -100,7 +100,7 @@ public class JakeGifPresenter implements Jake.Prestener{
                                     ) {
                                 L.i(TAG,"获取数据成功"+ j.toString());
                             }
-                            mView.showContent(jakeBeanList);
+                            mView.showMorejake(jakeBeanList);
 
 
 

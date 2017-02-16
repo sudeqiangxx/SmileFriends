@@ -1,10 +1,11 @@
 package cn.com.sdq.smilefriends.ui.fragment;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +36,7 @@ public class FragmentTwo extends BaseFragment implements Jake.View {
     private View view;
     private JakeGifAdapter mAdapter;
     private List<JakeBean> mDatas = new ArrayList<>();
-    private GridLayoutManager gridLayoutManager;
+    private LinearLayoutManager linearLayoutManager;
     private static final int ADD_DATA = 0;
     private Handler mHandler = new Handler() {
         @Override
@@ -61,10 +62,16 @@ public class FragmentTwo extends BaseFragment implements Jake.View {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_two, container, false);
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initData();
         initView();
         ButterKnife.bind(this, view);
-        return view;
     }
 
     @Override
@@ -95,18 +102,19 @@ public class FragmentTwo extends BaseFragment implements Jake.View {
 
     private void initView() {
         mRecyclerView= (RecyclerView) view.findViewById(R.id.gif_fragment_recycler_view);
-        gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-        mRecyclerView.setLayoutManager(gridLayoutManager);
+        linearLayoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
         mAdapter = new JakeGifAdapter(getActivity(), mDatas);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addItemDecoration(new FragmentTwo.SpaceItemDecoration(40));
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int visible = gridLayoutManager.getChildCount();
-                int total = gridLayoutManager.getItemCount();
-                int past = gridLayoutManager.findFirstCompletelyVisibleItemPosition();
+                int visible = linearLayoutManager.getChildCount();
+                int total = linearLayoutManager.getItemCount();
+                int past = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
                 if ((visible + past) >= total) {
                     requestCode = 1;
                     prestener.getMoreJake();
@@ -130,11 +138,10 @@ public class FragmentTwo extends BaseFragment implements Jake.View {
 
     @Override
     public void showMorejake(List<JakeBean> data) {
-        if (mDatas != null) {
-            mDatas.addAll(data);
-        } else {
-            mDatas = new ArrayList<>();
-            mDatas.addAll(data);
+        for (JakeBean ja:data
+             ) {
+            mDatas.add(ja);
+
         }
         mHandler.sendEmptyMessage(ADD_DATA);
         //通知刷新数据
@@ -155,5 +162,20 @@ public class FragmentTwo extends BaseFragment implements Jake.View {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+    public class SpaceItemDecoration extends RecyclerView.ItemDecoration{
+
+        private int space;
+
+        public SpaceItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+
+            if(parent.getChildPosition(view) != 0)
+                outRect.top = space;
+        }
     }
 }
