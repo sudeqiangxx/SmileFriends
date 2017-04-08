@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,8 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
@@ -51,6 +54,7 @@ public class MainActivity extends ActionBarActivity implements ViewAnimator.View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusBar(false);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initTabData();
@@ -79,6 +83,30 @@ public class MainActivity extends ActionBarActivity implements ViewAnimator.View
                     MY_PERMISSIONS_REQUEST_READ_CONTACTS);
         }
 
+    }
+
+    public void setStatusBar(boolean navi){
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+            Window window=getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.TRANSPARENT);
+            if (navi){
+                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
+                |View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        |View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                );
+
+                window.setStatusBarColor(Color.TRANSPARENT);
+            }else {
+                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                |View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                );
+
+            }
+        }else if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT){
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
     }
     @Override
     public void onRequestPermissionsResult(int requestCode,

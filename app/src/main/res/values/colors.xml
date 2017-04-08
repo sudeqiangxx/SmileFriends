@@ -7,4 +7,5 @@
     <color name="main_bottom_text_normal">#020204</color>
     <color name="main_bottom_bg">#dfdfdf</color>
     <color name="color_divider">#ffd6d6d6</color>
+    <color name="app_start_bg">#00ffffff</color>
 </resources>

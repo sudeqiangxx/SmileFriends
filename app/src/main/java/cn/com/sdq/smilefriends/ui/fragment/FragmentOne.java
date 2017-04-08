@@ -12,8 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import cn.com.sdq.smilefriends.R;
 import cn.com.sdq.smilefriends.base.BaseFragment;
@@ -21,18 +26,22 @@ import cn.com.sdq.smilefriends.bean.JakeBean;
 import cn.com.sdq.smilefriends.contact.Jake;
 import cn.com.sdq.smilefriends.presenter.JakePresenter;
 import cn.com.sdq.smilefriends.ui.adapter.MyRecyclerAdapter;
+import cn.com.sdq.smilefriends.util.utils.Constants;
+import cn.com.sdq.smilefriends.util.utils.L;
 
 /**
- * Created by Jack on 16/10/27.
+ * Created by sudeqiang on 16/10/27.
  */
 public class FragmentOne extends BaseFragment implements Jake.View{
     //view和数据交互枢纽
     private JakePresenter mJakePresenter;
     private LinearLayoutManager layoutManager;
+
     private static final String TAG=FragmentOne.class.getSimpleName();
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     private View view;
@@ -47,6 +56,7 @@ public class FragmentOne extends BaseFragment implements Jake.View{
             switch (msg.what){
                 case ADD_DATA:
                     mAdapter.notifyDataSetChanged();
+                    hideWaitDialog();
                     break;
                 default:break;
             }
@@ -59,12 +69,42 @@ public class FragmentOne extends BaseFragment implements Jake.View{
         view = inflater.inflate(R.layout.fragment_one, container, false);
         initData();
         initView();
+        L.i(TAG,"------------onCreateView");
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        L.i(TAG,"------------onViewCreated  view :"+view);
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        L.i(TAG,"------------onDestroy");
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        L.i(TAG,"------------onDestroyView");
+
+
     }
 
     @Override
@@ -73,23 +113,43 @@ public class FragmentOne extends BaseFragment implements Jake.View{
         mJakePresenter=new JakePresenter(this);
         setPresenter(mJakePresenter);
         mJakePresenter.getJakeList();
+        showWaitDialog();
+
     }
 
     public void setDatas(List<JakeBean> datas) {
-        if (mDatas==null||mAdapter==null){
-            initView();
-            initData();
-        }
+//        if (mDatas==null||mAdapter==null){
+//            initView();
+//            initData();
+//        }
         if (datas.size()>mDatas.size()){
             mDatas.addAll(datas);
             mAdapter.notifyDataSetChanged();
         }else {
             mDatas.clear();
             mDatas.addAll(datas);
+
             mAdapter.notifyDataSetChanged();
 
         }
 
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
+    public void onDataSynEvent(Map<Integer,List<JakeBean>> datas) {
+        if (datas!=null&&datas.containsKey(Constants.PAGE_ONE)){
+            List<JakeBean> data=datas.get(Constants.PAGE_ONE);
+            L.i(TAG,"刷新数据");
+            if (data.size()>mDatas.size()){
+                mDatas.addAll(data);
+                mAdapter.notifyDataSetChanged();
+            }else {
+                mDatas.clear();
+                mDatas.addAll(data);
+                mAdapter.notifyDataSetChanged();
+
+            }
+        }
+//        EventBus.getDefault().cancelEventDelivery(datas) ;//优先级高的订阅者可以终止事件往下传递
     }
 
     private void initView() {
@@ -116,6 +176,8 @@ public class FragmentOne extends BaseFragment implements Jake.View{
 
     @Override
     public void onResume() {
+        L.i(TAG,"------------onResume");
+
         super.onResume();
         if (mDatas==null||mAdapter==null){
             initData();

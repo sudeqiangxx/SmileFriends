@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.com.sdq.smilefriends.bean.JakeBean;
+import cn.com.sdq.smilefriends.util.utils.L;
 
 /**
  * Created by Administrator on 2017/1/15.
@@ -17,12 +18,14 @@ import cn.com.sdq.smilefriends.bean.JakeBean;
 public class JsonToBeanUtils {
 
     public static List<JakeBean> getResult(String result) {
+        L.i("json数据："+result);
         List<JakeBean> results = null;
         if (result != null) {
             results = new ArrayList<>();
             try {
                 JSONObject jsonObject = new JSONObject(result);
                 if (jsonObject.has("result")) {
+
                     JSONObject js = jsonObject.getJSONObject("result");
                     JSONArray array=js.getJSONArray("data");
                     for (int i = 0; i < array.length(); i++) {

@@ -22,4 +22,8 @@ public class Constants {
     public static final String DATA="data";
     public static final String SORT="desc";
 
+    public static final int PAGE_ONE=1;
+    public static final int PAGE_TWO=2;
+    public static final int PAGE_THR=3;
+
 }

@@ -2,7 +2,7 @@ package cn.com.sdq.smilefriends.ui.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 
 import cn.com.sdq.smilefriends.ui.fragment.FragmentOne;
 import cn.com.sdq.smilefriends.ui.fragment.FragmentThree;
@@ -12,11 +12,11 @@ import cn.com.sdq.smilefriends.ui.fragment.FragmentTwo;
 /**
  *
  */
-public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+public class MyFragmentPagerAdapter extends ViewPageFragmentAdapter {
     private String[] mTitles = new String[]{"最新笑话", "gif动图", "开心一笑"};
 
-    public MyFragmentPagerAdapter(FragmentManager fm) {
-        super(fm);
+    public MyFragmentPagerAdapter(FragmentManager fm, ViewPager viewPager) {
+        super(fm,viewPager,null,null);
     }
 
     private FragmentOne fragmentOne;

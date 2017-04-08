@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">微笑</string>
+    <string name="app_name">甜眯眯</string>
     <string name="app_name_s">SmileFriends</string>
     <string name="action_settings">Settings</string>
     <string name="drawer_open">Open</string>
@@ -8,5 +8,6 @@
     <string name="main_consult_text">资讯</string>
     <string name="main_mine_text">我的</string>
     <string name="loading">正在加载...</string>
+    <string name="app_message">正在努力开发中，请等候...</string>
 
 </resources>

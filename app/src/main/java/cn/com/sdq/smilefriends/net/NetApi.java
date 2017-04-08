@@ -11,5 +11,5 @@ public class NetApi {
     public static final String API_NET_NEWPHOTO_URI="http://japi.juhe.cn/joke/img/text.from";//最新趣图请求接口地址
 
     public static final String[] UPDATE_INDEX_KEY=new String[]{"desc","asc"};
-    public static final String REQUEST_NUMBER="10";//请求页数
+    public static final String REQUEST_NUMBER="20";//请求页数
 }
