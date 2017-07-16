@@ -8,4 +8,5 @@
     <color name="main_bottom_bg">#dfdfdf</color>
     <color name="color_divider">#ffd6d6d6</color>
     <color name="app_start_bg">#00ffffff</color>
+    <color name="color_white">#ffffff</color>
 </resources>

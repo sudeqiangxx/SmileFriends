@@ -1,6 +1,7 @@
 package cn.com.sdq.smilefriends.base;
 
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -171,6 +172,13 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 }
                 break;
             default:break;
+        }
+    }
+    class NetTask extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            return null;
         }
     }
 

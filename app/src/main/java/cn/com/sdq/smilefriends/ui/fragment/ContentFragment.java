@@ -62,22 +62,6 @@ public class ContentFragment extends Fragment implements Jake.View {
         recyclerView.setAdapter(mAdapter);
     }
 
-//    private void initRfL() {
-//        sRefresh.setColorSchemeColors(Color.RED, Color.BLUE, Color.GREEN);
-//
-//        sRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                mPresent.getJakeList();
-//
-//
-//            }
-//        });
-//
-//        mPresent = new JakePresenter(this);
-//
-//        mPresent.getJakeList();
-//    }
 
     public static ContentFragment newInstance(int resId) {
         ContentFragment contentFragment = new ContentFragment();
